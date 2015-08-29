@@ -48,10 +48,10 @@
   },
   "bin": "thermite.js",
   "scripts": {
-    "test-node": "./node_modules/.bin/faucet ./tests.js",
+    "test": "./node_modules/.bin/faucet ./tests.js",
     "test-browser": "./node_modules/.bin/browserify ./tests.js | ./node_modules/.bin/testling",
     "watch": "./node_modules/.bin/nodemon ./tests.js",
-    "test": "npm run test-node && npm run test-browser",
+    "test-all": "npm run test-node && npm run test-browser",
     "lint": "./node_modules/.bin/minilint '**/*.js' -e 'node_modules/**' **/*.min.js",
     "build": "./node_modules/.bin/browserify -s thermite -r ./ | ./node_modules/.bin/uglifyjs > thermite.min.js; gzip -c thermite.min.js | wc -c"
   }
