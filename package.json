@@ -48,7 +48,7 @@
   },
   "bin": "thermite.js",
   "scripts": {
-    "test": "./node_modules/.bin/faucet ./tests.js",
+    "test": "./tests.js",
     "test-browser": "./node_modules/.bin/browserify ./tests.js | ./node_modules/.bin/testling",
     "watch": "./node_modules/.bin/nodemon ./tests.js",
     "test-all": "npm run test-node && npm run test-browser",
