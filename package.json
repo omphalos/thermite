@@ -16,6 +16,19 @@
     "url": "https://github.com/omphalos/thermite/issues"
   },
   "homepage": "https://github.com/omphalos/thermite",
+  "testling": {
+    "files": "./tests.js",
+    "browsers": [
+      "ie/6..latest",
+      "chrome/22..latest",
+      "firefox/16..latest",
+      "safari/latest",
+      "opera/11.0..latest",
+      "iphone/6",
+      "ipad/6",
+      "android-browser/latest"
+    ]
+  },
   "dependencies": {
     "escope": "^3.1.0",
     "falafel": "^1.2.0",
