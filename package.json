@@ -46,9 +46,8 @@
     "testling": "^1.7.1",
     "uglifyjs": "^2.4.10"
   },
-  "bin": "thermite.js",
   "scripts": {
-    "test": "./tests.js",
+    "test": "./node_modules/.bin/tape ./tests.js",
     "test-browser": "./node_modules/.bin/browserify ./tests.js | ./node_modules/.bin/testling",
     "watch": "./node_modules/.bin/nodemon ./tests.js",
     "test-all": "npm run test-node && npm run test-browser",
