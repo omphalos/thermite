@@ -72,12 +72,6 @@ Calling `update` here doesn't add a second event listener to the DOM.
 It effectively replaces the reference to the event listener stored in the DOM
 with a new one.
 
-Live Example
-------------
-
-The live example shows more stuff.
-See it [here](#todo).
-
 Tests
 -----
 
