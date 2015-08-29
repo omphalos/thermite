@@ -1,6 +1,11 @@
 Thermite
 ========
 
+[![Build Status](https://secure.travis-ci.org/omphalos/thermite.png)
+](http://travis-ci.org/omphalos/thermite)
+[![Browser Support](https://ci.testling.com/omphalos/thermite.png)
+](https://ci.testling.com/omphalos/thermite)
+
 Thermite gives you an API for programmatically live reloading code.
 
 Its main purpose is to act like a library used by
