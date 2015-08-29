@@ -1,0 +1,45 @@
+{
+  "name": "thermite",
+  "version": "0.0.1",
+  "description": "JavaScript live code reloader for Node and browsers",
+  "main": "thermite.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/omphalos/thermite"
+  },
+  "keywords": [
+    "JavaScript"
+  ],
+  "author": "omphalos",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/omphalos/thermite/issues"
+  },
+  "homepage": "https://github.com/omphalos/thermite",
+  "dependencies": {
+    "escope": "^3.1.0",
+    "falafel": "^1.2.0",
+    "googlediff": "^0.1.0",
+    "minilint": "0.0.6",
+    "survivor": "^0.0.3"
+  },
+  "devDependencies": {
+    "faucet": "0.0.1",
+    "istanbul": "^0.3.17",
+    "minilint": "0.0.5",
+    "nodemon": "^1.4.1",
+    "nodeunit": "^0.9.1",
+    "tape": "^4.2.0",
+    "testling": "^1.7.1",
+    "uglifyjs": "^2.4.10"
+  },
+  "bin": "thermite.js",
+  "scripts": {
+    "test-node": "./node_modules/.bin/faucet ./tests.js",
+    "test-browser": "./node_modules/.bin/browserify ./tests.js | ./node_modules/.bin/testling",
+    "watch": "./node_modules/.bin/nodemon ./tests.js",
+    "test": "npm run test-node && npm run test-browser",
+    "lint": "./node_modules/.bin/minilint '**/*.js' -e 'node_modules/**' **/*.min.js",
+    "build": "./node_modules/.bin/browserify -s thermite -r ./ | ./node_modules/.bin/uglifyjs > thermite.min.js; gzip -c thermite.min.js | wc -c"
+  }
+}
