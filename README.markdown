@@ -52,7 +52,7 @@ Basic usage
     hotSwappableCode.result(2, 3) // returns 5
 
 Note that thermite doesn't just replace one reference to a function,
-it replaces all references to functions and closures as well.
+it effectively replaces all references to functions and closures as well.
 
 For example:
 
@@ -69,7 +69,7 @@ For example:
     '}'].join('\n'))
 
 Calling `update` here doesn't add a second event listener to the DOM.
-It replaces the reference to the event listener stored in the DOM
+It effectively replaces the reference to the event listener stored in the DOM
 with a new one.
 
 Live Example
