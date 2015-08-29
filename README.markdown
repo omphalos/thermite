@@ -11,11 +11,6 @@ Thermite gives you an API for programmatically live reloading code.
 Its main purpose is to act like a library used by
 development and (experimentally) deployment tools.
 
-It works cross-browser and in Node.
-This means you can live reload code while users are browsing your page,
-no matter what browser they use.
-Additionally, this provides hot swapping capability across runtimes.
-
 Comparison with V8's live code reloading
 ----------------------------------------
 
