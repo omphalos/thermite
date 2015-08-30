@@ -16,38 +16,23 @@
     "url": "https://github.com/omphalos/thermite/issues"
   },
   "homepage": "https://github.com/omphalos/thermite",
-  "testling": {
-    "files": "./tests.js",
-    "browsers": [
-      "ie/6..latest",
-      "chrome/22..latest",
-      "firefox/16..latest",
-      "safari/latest",
-      "opera/11.0..latest",
-      "iphone/6",
-      "ipad/6",
-      "android-browser/latest"
-    ]
-  },
   "dependencies": {
-    "escope": "^3.1.0",
     "falafel": "^1.2.0",
     "googlediff": "^0.1.0",
     "survivor": "^0.0.3"
   },
   "devDependencies": {
-    "faucet": "0.0.1",
     "istanbul": "^0.3.17",
     "minilint": "^0.0.5",
     "nodemon": "^1.4.1",
     "nodeunit": "^0.9.1",
     "tape": "^4.2.0",
-    "testling": "^1.7.1",
-    "uglifyjs": "^2.4.10"
+    "uglifyjs": "^2.4.10",
+    "zuul": "^3.3.1"
   },
   "scripts": {
     "test": "./node_modules/.bin/tape ./tests.js",
-    "test-browser": "./node_modules/.bin/browserify ./tests.js | ./node_modules/.bin/testling",
+    "test-browser": "./node_modules/.bin/zuul -- test",
     "watch": "./node_modules/.bin/nodemon ./tests.js",
     "test-all": "npm run test-node && npm run test-browser",
     "lint": "./node_modules/.bin/minilint '**/*.js' -e 'node_modules/**' **/*.min.js",
