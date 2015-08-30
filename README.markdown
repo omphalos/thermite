@@ -56,17 +56,17 @@ it effectively replaces all references to functions and closures as well.
 
 For example:
 
-    var hotSwappableCode = thermite.eval([
-      'document.addEventListener("mousemove", function(evt) {',
-      '  console.log(evt.clientX * evt.clientY)'
-      '}'
-    '}'].join('\n'))
+    var hotSwappableCode = thermite.eval('(' + function() {
+      document.addEventListener("mousemove", function(evt) {
+        console.log(evt.clientX * evt.clientY)
+      })
+    } + ')()')
 
-    hotSwappableCode.update([
-      'document.addEventListener("mousemove", function(evt) {',
-      '  console.log(evt.clientX + evt.clientY)'
-      '}'
-    '}'].join('\n'))
+    hotSwappableCode.update('(' + function() {
+      document.addEventListener("mousemove", function(evt) {
+        console.log(evt.clientX + evt.clientY)
+      })
+    } + ')()')
 
 Calling `update` here doesn't add a second event listener to the DOM.
 It effectively replaces the reference to the event listener stored in the DOM
