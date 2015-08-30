@@ -22,8 +22,8 @@
     "survivor": "^0.0.3"
   },
   "devDependencies": {
-    "istanbul": "^0.3.17",
-    "minilint": "^0.0.5",
+    "istanbul": "^0.3.19",
+    "minilint": "0.0.10",
     "nodemon": "^1.4.1",
     "nodeunit": "^0.9.1",
     "tape": "^4.2.0",
@@ -31,11 +31,14 @@
     "zuul": "^3.3.1"
   },
   "scripts": {
+    "cover": "./node_modules/.bin/istanbul cover ./tests.js",
     "test": "./node_modules/.bin/tape ./tests.js",
-    "test-browser": "./node_modules/.bin/zuul -- test",
+    "zuul": "./node_modules/.bin/zuul -- tests.js",
     "watch": "./node_modules/.bin/nodemon ./tests.js",
-    "test-all": "npm run test-node && npm run test-browser",
-    "lint": "./node_modules/.bin/minilint '**/*.js' -e 'node_modules/**' **/*.min.js",
-    "build": "./node_modules/.bin/browserify -s thermite -r ./ | ./node_modules/.bin/uglifyjs > thermite.min.js; gzip -c thermite.min.js | wc -c"
+    "test-all": "npm run cover && npm run zuul",
+    "lint": "./node_modules/.bin/minilint '**/*.js' -e 'node_modules/**' '**/*.min.js' 'coverage/**'",
+    "build-min": "./node_modules/.bin/browserify -s thermite -r ./ | ./node_modules/.bin/uglifyjs > thermite.min.js; gzip -c thermite.min.js | wc -c",
+    "build-tests": "./node_modules/.bin/browserify ./tests.js > tests.browser.js",
+    "build": "npm run build-min && npm run build-tests"
   }
 }

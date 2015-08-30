@@ -3,7 +3,7 @@ Thermite
 
 [![Build Status](https://secure.travis-ci.org/omphalos/thermite.png)
 ](http://travis-ci.org/omphalos/thermite)
-[![Browser Support](https://saucelabs.com/buildstatus/omphalos_thermite)
+[![Browser Support](https://saucelabs.com/browser-matrix/omphalos_thermite.svg)
 ](https://saucelabs.com/u/omphalos_thermite)
 
 Thermite gives you an API for programmatically live reloading code.
