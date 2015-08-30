@@ -32,8 +32,8 @@
   },
   "scripts": {
     "cover": "./node_modules/.bin/istanbul cover ./tests.js",
-    "test": "./node_modules/.bin/tape ./tests.js",
-    "zuul": "./node_modules/.bin/zuul -- tests.js",
+    "test": "./node_modules/.bin/zuul -- tests.js",
+    "tape": "./node_modules/.bin/tape ./tests.js",
     "watch": "./node_modules/.bin/nodemon ./tests.js",
     "test-all": "npm run cover && npm run zuul",
     "lint": "./node_modules/.bin/minilint '**/*.js' -e 'node_modules/**' '**/*.min.js' 'coverage/**'",
