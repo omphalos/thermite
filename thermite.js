@@ -12,15 +12,15 @@ var template = ['function $thermiteTemplate() {',
   'if(__thermiteMap.$thermiteContextID.$thermiteBlockID.codeVersion >',
   '  (__thermiteFunctionVersion || -1)) {',
   '',
-  '  __thermiteMap.$thermiteContextID.$thermiteBlockID.fn =',
+  '  __thermiteFunction =',
   '    eval(__thermiteMap.$thermiteContextID.$thermiteBlockID.code)',
   '',
   '  __thermiteFunctionVersion =',
   '    __thermiteMap.$thermiteContextID.$thermiteBlockID.codeVersion',
   '}',
   '',
-  'return __thermiteMap.$thermiteContextID.$thermiteBlockID.fn',
-  '  .apply(this, arguments)',
+  'return __thermiteFunction.apply(this, arguments)',
+  '',
 '}'].join('\n')
 
 global.__thermiteMap = {}
@@ -161,13 +161,13 @@ function rewriteNodeAndStoreInMap(contextID, version, node) {
 }
 
 function addVersionToDeclaration(boundTemplate, name) {
-  return 'var __thermiteFunctionVersion;'
+  return 'var __thermiteFunctionVersion, __thermiteFunction;'
     + boundTemplate.replace('$thermiteTemplate', name)
 }
 
 function addVersionToExpression(boundTemplate, name) {
   return '(function ' + name + '() { '
-    + 'var __thermiteFunctionVersion; '
+    + 'var __thermiteFunctionVersion, __thermiteFunction; '
     + 'return (' + boundTemplate.replace('$thermiteTemplate', '') + ')'
     + '.apply(this, arguments)'
   + '})'
