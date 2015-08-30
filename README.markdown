@@ -28,7 +28,7 @@ Thermite doesn't have these restrictions.
 
 I'm not complaining about V8 - I love it.
 But I think there's utility
-in having a live code reloading library in the browser.
+in having a library available that hot-swaps code cross-browser.
 
 Set Up
 ------
