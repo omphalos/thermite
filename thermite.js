@@ -161,7 +161,7 @@ function rewriteNodeAndStoreInMap(contextID, version, node) {
 }
 
 function addVersionToDeclaration(boundTemplate, name) {
-  return 'var __thermiteFunctionVersion, __thermiteFunction;'
+  return 'var __thermiteFunctionVersion, __thermiteFunction; '
     + boundTemplate.replace('$thermiteTemplate', name)
 }
 
