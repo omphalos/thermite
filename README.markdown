@@ -21,14 +21,14 @@ Nevertheless there are advantages to doing live code reloading with a library.
 (AFAIK),
 so if you want to do this in another browser,
 you're out of luck.
-* V8 requires the user to start a debugging session.
-* V8 doesn't provide a way to hot swap from the program itself.
+* V8 requires the user to start a debugging session
+and doesn't provide a way to hot swap from the program itself.
 
-Thermite doesn't have any of these restrictions.
+Thermite doesn't have these restrictions.
 
 I'm not complaining about V8 - I love it.
 But I think there's utility
-in having a cross-platform live code reloading library.
+in having a live code reloading library in the browser.
 
 Set Up
 ------
@@ -80,15 +80,18 @@ To test, clone the repo and run `npm install` then `npm test`.
 How it works
 ------------
 
-Thermite works by instrumenting code
-and saving references to each function.
-It invokes `eval` in scope to ensure that scope is preserved.
+Thermite works by rewriting code
+and proxying each function.
 
-When code updates,
-thermite runs a diff and tries match each function.
-Updated functions lazily invoke `eval` in the proper scope,
-as they are called,
-replacing old functions.
+Additionally it stores the initial version of your code in a map.
+
+When you call `update`,
+thermite runs a diff to identify how functions change during the update.
+It uses this diff to update the map.
+
+Whenever a function runs, it checks its version.
+When a function finds that its version is lower than the one in the map,
+it `evals` the new function (creating it in the proper scope).
 
 License
 -------
