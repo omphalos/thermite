@@ -1,7 +1,6 @@
 'use strict'
 
 var falafel = require('falafel')
-var estraverse = require('estraverse')
 var DiffMatchPatch = require('googlediff')
 var survivor = require('survivor')
 var functionNodeTypes = ['FunctionExpression', 'FunctionDeclaration']

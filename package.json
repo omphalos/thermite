@@ -33,13 +33,12 @@
     "escope": "^3.1.0",
     "falafel": "^1.2.0",
     "googlediff": "^0.1.0",
-    "minilint": "0.0.6",
     "survivor": "^0.0.3"
   },
   "devDependencies": {
     "faucet": "0.0.1",
     "istanbul": "^0.3.17",
-    "minilint": "0.0.5",
+    "minilint": "^0.0.5",
     "nodemon": "^1.4.1",
     "nodeunit": "^0.9.1",
     "tape": "^4.2.0",
