@@ -20,12 +20,15 @@ test('should eval an anonymous function', function(t) {
   t.end()
 })
 
-test('should eval a named function', function(t) {
-  var fn = thermite.eval('(function x() { return 123 })').result
-  t.equal(fn(), 123)
-  t.equal(fn.name, 'x')
-  t.end()
-})
+var canReadFunctionNames = (function f() {}).name === 'f'
+if(canReadFunctionNames) {
+  test('should eval a named function', function(t) {
+    var fn = thermite.eval('(function x() { return 123 })').result
+    t.equal(fn(), 123)
+    t.equal(fn.name, 'x')
+    t.end()
+  })
+}
 
 test('should eval in scope', function(t) {
   var x = 123
