@@ -208,17 +208,11 @@ test('should update recursive function references', function(t) {
   var recursiveReference
 
   var target = thermite.eval('(function rec(x) {\n'
-    + '  recursiveReference = recursiveReference || rec\n'
-    + '  return x ? recursiveReference(x.tail) + 1 : 0\n'
-    + '})', {
-    eval: function(code) {
-      // Pass eval so that the function can access recursiveReference
-      return eval(code)
-    }
-  })
+    + '  return x ? rec(x.tail) + 1 : 0\n'
+    + '})')
 
   // Call the function so that recursiveReference gets set
-  target.result()
+  var recursiveReference = target.result
 
   // Replace this with a new calculation
   target.update('(function rec(x) {\n'
