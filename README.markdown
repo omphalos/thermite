@@ -4,6 +4,9 @@ Thermite
 [![Build Status](https://secure.travis-ci.org/omphalos/thermite.png)
 ](http://travis-ci.org/omphalos/thermite)
 
+[![Coverage](https://coveralls.io/repos/omphalos/thermite/badge.svg)
+](https://coveralls.io/github/omphalos/thermite)
+
 [![Browser Support](https://saucelabs.com/browser-matrix/omphalos_thermite.svg)
 ](https://saucelabs.com/u/omphalos_thermite)
 
