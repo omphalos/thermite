@@ -9,10 +9,8 @@ browsers:
   - name: safari
     version: latest
   - name: iphone
-    version: 'latest'
+    version: latest
   - name: android
-    version: 'latest'
+    version: latest
   - name: opera
     version: latest
-  - name: ipad
-    version: 'latest'
