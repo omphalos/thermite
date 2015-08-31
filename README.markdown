@@ -3,7 +3,6 @@ Thermite
 
 [![Build Status](https://secure.travis-ci.org/omphalos/thermite.png)
 ](http://travis-ci.org/omphalos/thermite)
-
 [![Coverage](https://coveralls.io/repos/omphalos/thermite/badge.svg)
 ](https://coveralls.io/github/omphalos/thermite)
 
