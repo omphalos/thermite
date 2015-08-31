@@ -17,21 +17,22 @@
   },
   "homepage": "https://github.com/omphalos/thermite",
   "dependencies": {
-    "falafel": "^1.2.0",
-    "googlediff": "^0.1.0",
+    "falafel": "1.2.0",
+    "googlediff": "0.1.0",
     "survivor": "^0.0.3"
   },
   "devDependencies": {
-    "istanbul": "^0.3.19",
-    "minilint": "0.0.10",
-    "nodemon": "^1.4.1",
-    "nodeunit": "^0.9.1",
-    "tape": "^4.2.0",
-    "uglifyjs": "^2.4.10",
-    "zuul": "^3.3.1"
+    "coveralls": "2.11.4",
+    "istanbul": "0.3.19",
+    "minilint": "^0.0.10",
+    "nodemon": "1.4.1",
+    "tape": "4.2.0",
+    "uglifyjs": "2.4.10",
+    "zuul": "3.3.1"
   },
   "scripts": {
     "cover": "./node_modules/.bin/istanbul cover ./tests.js",
+    "coveralls": "./node_modules/.bin/istanbul cover ./tests.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls && rm -rf ./coverage",
     "test": "./node_modules/.bin/zuul -- tests.js",
     "tape": "./node_modules/.bin/tape ./tests.js",
     "watch": "./node_modules/.bin/nodemon ./tests.js",
