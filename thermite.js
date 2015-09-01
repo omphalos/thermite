@@ -116,7 +116,7 @@ function forEachNode(source, visitor) {
   try {
     return falafel(source, { ranges: true }, visitor)
   } catch(err) {
-    console.log('Error rewriting source:')
+    console.log('Error parsing source:')
     console.log(source)
     throw err
   }
@@ -138,16 +138,11 @@ function rewriteNodeAndStoreInMap(contextID, version, node) {
     node.update(code)
   }
 
-  switch(node.type) {
-  case 'FunctionDeclaration':
-    boundTemplate = addVersionToDeclaration(boundTemplate, name)
-    break
-  case 'FunctionExpression':
-    boundTemplate = addVersionToExpression(boundTemplate, name)
-    break
-  default:
-    throw new Error('unexpected: ' + node.type)
+  var addVersionTo = {
+    FunctionDeclaration: addVersionToDeclaration,
+    FunctionExpression: addVersionToExpression
   }
+  boundTemplate = addVersionTo[node.type](boundTemplate, name)
 
   node.update(boundTemplate)
 

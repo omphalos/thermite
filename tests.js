@@ -222,3 +222,109 @@ test('should update recursive function references', function(t) {
   t.equal(recursiveReference({ tail: { tail: {} } }), 103)
   t.end()
 })
+
+test('should propagate parse error', function(t) {
+  var originalLog = console.log
+  var logs = []
+  console.log = logs.push.bind(logs)
+  try {
+    try {
+      thermite.eval('1.1.1')
+    } finally {
+      console.log = originalLog
+    }
+  } catch(err) {
+    t.equal(logs[0], 'Error parsing source:')
+    t.equal(logs[1], '1.1.1')
+    return t.end()
+  }
+  t.fail('failed to propagate error')
+  t.end()
+})
+
+test('should propagate parse error during update', function(t) {
+  var target = thermite.eval('1.1')
+  var originalLog = console.log
+  var logs = []
+  console.log = logs.push.bind(logs)
+  try {
+    try {
+      target.update('1.1.1')
+    } finally {
+      console.log = originalLog
+    }
+  } catch(err) {
+    t.equal(logs[0], 'Error parsing source:')
+    t.equal(logs[1], '1.1.1')
+    return t.end()
+  }
+  t.fail('failed to propagate error')
+  t.end()
+})
+
+test('should propagate runtime error', function(t) {
+  var originalLog = console.log
+  var logs = []
+  console.log = logs.push.bind(logs)
+  try {
+    try {
+      thermite.eval('a.b.c')
+    } finally {
+      console.log = originalLog
+    }
+  } catch(err) {
+    t.equal(logs[0], 'Error evaling code:')
+    t.equal(logs[1], 'a.b.c')
+    return t.end()
+  }
+  t.fail('failed to propagate error')
+  t.end()
+})
+
+test('should handle changing declaration to expression', function(t) {
+  var target = thermite.eval('(function() {\n'
+    + '  function fn(a, b) {\n'
+    + '    return a + b\n'
+    + '  }\n'
+    + '  return fn\n'
+    + '})()')
+  var fn = target.result
+  target.update('(function() {\n'
+    + '  var fn = function(a, b) {\n'
+    + '    return a * b\n'
+    + '  }\n'
+    + '  return fn\n'
+    + '})()')
+  t.equal(fn(2, 3), 6)
+  t.end()
+})
+
+test('should handle changing expression to declaration', function(t) {
+  var target = thermite.eval('(function() {\n'
+    + '  var fn = function(a, b) {\n'
+    + '    return a * b\n'
+    + '  }\n'
+    + '  return fn\n'
+    + '})()')
+  var fn = target.result
+  target.update('(function() {\n'
+    + '  function fn(a, b) {\n'
+    + '    return a + b\n'
+    + '  }\n'
+    + '  return fn\n'
+    + '})()')
+  t.equal(fn(2, 3), 5)
+  t.end()
+})
+
+test('should preserve deleted functions', function(t) {
+  var target = thermite.eval('(function() {\n'
+    + '  return function() { return "hello" }\n'
+    + '})()')
+  var fn = target.result
+  target.update('(function() {\n'
+    + '  return\n'
+    + '})()')
+  t.equal(fn(), 'hello')
+  t.end()
+})
