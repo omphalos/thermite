@@ -33,31 +33,24 @@ I'm not complaining about V8 - I love it.
 But I think there's utility
 in having a library available that hot-swaps code cross-browser.
 
+Demo
+----
+
+The demo is [here](https://omphalos.github.io/thermite).
+
+Check it out!
+
 Set Up
 ------
 
 If you are using Node, first, `npm install thermite`,
 then `var thermite = require('thermite')`
 
-If you are using the browser, `thermite` is exposed as a global variable.
+If you are using the browser, use thermite.min.js.
+`thermite` is exposed as a global variable.
 
 Basic usage
 -----------
-
-    var hotSwappableCode = thermite.eval('(' + function multiply(x, y) {
-      return x * y
-    } + ')')
-
-    hotSwappableCode.update('(' + function add(x, y) {
-      return x + y
-    } + ')')
-
-    hotSwappableCode.result(2, 3) // returns 5
-
-Note that thermite doesn't just replace one reference to a function,
-it effectively replaces all references to functions and closures as well.
-
-For example:
 
     var hotSwappableCode = thermite.eval('(' + function() {
       document.addEventListener("mousemove", function(evt) {
@@ -65,13 +58,13 @@ For example:
       })
     } + ')()')
 
-    hotSwappableCode.update('(' + function() {
+    hotSwappableCode.hotSwap('(' + function() {
       document.addEventListener("mousemove", function(evt) {
         console.log(evt.clientX + evt.clientY)
       })
     } + ')()')
 
-Calling `update` here doesn't add a second event listener to the DOM.
+Calling `hotSwap` here doesn't add a second event listener to the DOM.
 It effectively replaces the reference to the event listener stored in the DOM
 with a new one.
 
@@ -88,8 +81,8 @@ and proxying each function.
 
 Additionally it stores the initial version of your code in a map.
 
-When you call `update`,
-thermite runs a diff to identify how functions change during the update.
+When you call `hotSwap`,
+thermite runs a diff to identify how functions change.
 It uses this diff to update the map.
 
 Whenever a function runs, it checks its version.

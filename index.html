@@ -1,4 +1,6 @@
 <!doctype html>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.6.0/codemirror.css">
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.6.0/theme/3024-night.css">
 <style>
 html, body {
   margin: 0;
@@ -6,27 +8,55 @@ html, body {
   height: 100%;
   width: 100%;
   font-family: sans-serif;
+  background: darkgray;
 }
 * { box-sizing: border-box; }
-textarea { width: 100%; height: 50%; }
-button { margin-top: 1%; }
-button:hover { cursor: pointer; }
+body > div { margin-top: 3%; }
+#hotSwap {
+  background-color: black;
+  width: auto;
+  display: inline-block;
+  color: lightgray;
+  padding: 5px;
+  border: 1px solid transparent;
+}
+#hotSwap:hover { cursor: pointer; color: white; border: 1px solid white; }
+.CodeMirror { height: 400px; }
 </style>
+<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.6.0/codemirror.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.6.0/mode/javascript/javascript.js"></script>
 <script src="thermite.min.js"></script>
-<textarea id="code">
+<textarea id="textarea">
 document.body.addEventListener('mousemove', function(evt) {
-  message.innerHTML = evt.clientX * evt.clientY
-})
 
-// Try changing the code to:
-// message.innerHTML = evt.clientX + evt.clientY
-// Click Update when you are done to see your changes in action.
+  message.innerHTML = Math.random()
+
+  /*
+
+  Try editing this code; for example,
+
+    message.innerHTML = evt.clientX
+
+  Click "Hot Swap" when you are done to see your changes in action.
+
+  "Hot Swap" doesn't add a second event listener.
+  It doesn't refresh the page.
+  It updates the original function in place.
+
+  */
+
+})
 </textarea>
-<button id="update">Update</button>
-<span id="message"></span>
+<div id="hotSwap">Hot Swap</div>
+<div id="message"></div>
 <script>
-var target = thermite.eval(code.value)
-update.addEventListener('click', function() {
-  target.update(code.value)
+var code = CodeMirror.fromTextArea(textarea, {
+  theme: '3024-night',
+  mode: 'javascript'
+})
+var target = thermite.eval(code.getValue())
+hotSwap.addEventListener('click', function() {
+  target.hotSwap(code.getValue())
 })
 </script>
+<style>* { transition: all 0.2s ease-out; }</style>

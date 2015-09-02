@@ -51,16 +51,15 @@ function thermiteEval(source, options) {
   }).toString()
 
   return {
-    update: function(source) { return update(state, source) },
+    hotSwap: function(source) { return hotSwap(state, source) },
     result: invokeEval(options.eval || eval, rewritten)
   }
 }
 
-function update(state, source) {
+function hotSwap(state, source) {
 
   state.version++
 
-  var updateID = 0
   var dmp = new DiffMatchPatch()
   var diffs = dmp.diff_main(state.lastSource, source, state.doLineDiff)
   var lookup = survivor(diffs, true)

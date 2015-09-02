@@ -31,15 +31,15 @@
     "zuul": "3.3.1"
   },
   "scripts": {
-    "cover": "./node_modules/.bin/istanbul cover ./tests.js",
-    "coveralls": "./node_modules/.bin/istanbul cover ./tests.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls && rm -rf ./coverage",
-    "test": "./node_modules/.bin/zuul -- tests.js",
+    "test": "npm run zuul",
+    "zuul": "./node_modules/.bin/zuul -- tests.js",
     "tape": "./node_modules/.bin/tape ./tests.js",
     "watch": "./node_modules/.bin/nodemon ./tests.js",
-    "test-all": "npm run cover && npm run zuul",
+    "test-all": "npm run lint && npm run cover && npm run zuul",
+    "cover": "./node_modules/.bin/istanbul cover ./tests.js",
+    "coveralls": "./node_modules/.bin/istanbul cover ./tests.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls && rm -rf ./coverage",
     "lint": "./node_modules/.bin/minilint '**/*.js' -e 'node_modules/**' '**/*.min.js' 'coverage/**'",
-    "build-min": "./node_modules/.bin/browserify -s thermite -r ./ | ./node_modules/.bin/uglifyjs > thermite.min.js; gzip -c thermite.min.js | wc -c",
-    "build-tests": "./node_modules/.bin/browserify ./tests.js > tests.browser.js",
-    "build": "npm run build-min && npm run build-tests"
+    "build": "./node_modules/.bin/browserify -s thermite -r ./ | ./node_modules/.bin/uglifyjs > thermite.min.js; gzip -c thermite.min.js | wc -c",
+    "release": "npm run build && npm run test-all && ./node_modules/.bin/bumpt"
   }
 }

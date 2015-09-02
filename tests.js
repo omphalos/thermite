@@ -45,32 +45,32 @@ test('should eval in scope', function(t) {
 
 test('should replace functions', function(t) {
   var target = thermite.eval('(function noop() {})')
-  target.update('(function add(x, y) { return x + y })')
+  target.hotSwap('(function add(x, y) { return x + y })')
   t.equal(target.result(2, 3), 5)
   t.end()
 })
 
 test('should replace multiline functions', function(t) {
   var target = thermite.eval('(function noop() {})')
-  target.update('(function add(x, y) { return x + y })')
+  target.hotSwap('(function add(x, y) { return x + y })')
   t.equal(target.result(2, 3), 5)
   t.end()
 })
 
-test('should update function references', function(t) {
+test('should hotSwap function references', function(t) {
   var target = thermite.eval('(function() {})')
   var savedReference = target.result
-  target.update('(function add(x, y) { return x + y })')
+  target.hotSwap('(function add(x, y) { return x + y })')
   t.equal(savedReference(2, 3), 5)
   t.end()
 })
 
-test('should update recursive-style function references', function(t) {
+test('should hotSwap recursive-style function references', function(t) {
   var target = thermite.eval('(function length(x) {\n'
     + '  return x ? rec(x.tail) + 1 : 0\n'
     + '})')
   var savedReference = target.result
-  target.update('(function lengthPlus100(x) {\n'
+  target.hotSwap('(function lengthPlus100(x) {\n'
     + '  return x ? lengthPlus100(x.tail) + 1 : 100\n'
     + '})')
   t.equal(savedReference({ tail: { tail: {} } }), 103)
@@ -83,7 +83,7 @@ test('should hot swap nested functions', function(t) {
     + '  function inner() { return "inner" }\n'
     + '})')
   var savedReference = target.result
-  target.update('(function outer() {\n'
+  target.hotSwap('(function outer() {\n'
     + '  return "outerChanged-" + inner()\n'
     + '  function inner() { return "innerChanged" }\n'
     + '})')
@@ -96,7 +96,7 @@ test('should add functions', function(t) {
     + '  return function inner() {}\n'
     + '})')
   var outer = target.result
-  target.update('(function outer() {\n'
+  target.hotSwap('(function outer() {\n'
     + '  return function inner1() {\n'
     + '    return function inner2() { return "inner2Result" }\n'
     + '  }\n'
@@ -108,17 +108,17 @@ test('should add functions', function(t) {
   t.end()
 })
 
-test('should update added functions', function(t) {
+test('should hotSwap added functions', function(t) {
   var target = thermite.eval('(function outer() {\n'
     + '  return function inner() {}\n'
     + '})')
   var outer = target.result
-  target.update('(function outer() {\n'
+  target.hotSwap('(function outer() {\n'
     + '  return function inner1() {\n'
     + '    return function inner2() { return "inner2Result" }\n'
     + '  }\n'
     + '})')
-  target.update('(function outer() {\n'
+  target.hotSwap('(function outer() {\n'
     + '  return function inner1() {\n'
     + '    return function inner2() { return "inner2ResultChanged" }\n'
     + '  }\n'
@@ -130,13 +130,13 @@ test('should update added functions', function(t) {
   t.end()
 })
 
-test('should update added functions 10 times', function(t) {
+test('should hotSwap added functions 10 times', function(t) {
   var target = thermite.eval('(function outer() {\n'
     + '  return function inner() {}\n'
     + '})')
   var outer = target.result
   for(var i = 0; i < 10; i++)
-    target.update('(function outer() {\n'
+    target.hotSwap('(function outer() {\n'
       + '  return function inner1() {\n'
       + '    return function inner2() { return ' + i + ' }\n'
       + '  }\n'
@@ -148,15 +148,15 @@ test('should update added functions 10 times', function(t) {
   t.end()
 })
 
-test('should update function twice', function(t) {
+test('should hotSwap function twice', function(t) {
   var target = thermite.eval('(function outer() {\n'
     + '  return function inner() {}\n'
     + '})')
   var outer = target.result
-  target.update('(function outer() {\n'
+  target.hotSwap('(function outer() {\n'
     + '  return function inner() { return 1 }\n'
     + '})')
-  target.update('(function outer() {\n'
+  target.hotSwap('(function outer() {\n'
     + '  return function inner() { return 2 }\n'
     + '})')
   var inner = outer()
@@ -164,13 +164,13 @@ test('should update function twice', function(t) {
   t.end()
 })
 
-test('should update 10 times', function(t) {
+test('should hotSwap 10 times', function(t) {
   var target = thermite.eval('(function outer() {\n'
     + '  return function inner() {}\n'
     + '})')
   var outer = target.result
   for(var i = 0; i < 10; i++)
-    target.update('(function outer() {\n'
+    target.hotSwap('(function outer() {\n'
       + '  return function inner() { return ' + i + ' }\n'
       + '})')
   var inner = outer()
@@ -178,33 +178,33 @@ test('should update 10 times', function(t) {
   t.end()
 })
 
-test('should update member functions', function(t) {
+test('should hotSwap member functions', function(t) {
   var target = thermite.eval('(function() {\n'
     + '  return { fn: function() {} }\n'
     + '})')
   var fn = target.result().fn
-  target.update('(function() {\n'
-    + '  return { fn: function() { return "updated" } }\n'
+  target.hotSwap('(function() {\n'
+    + '  return { fn: function() { return "hotSwapped" } }\n'
     + '})')
-  t.equal(fn(), 'updated')
+  t.equal(fn(), 'hotSwapped')
   t.end()
 })
 
-test('should update all copies of a function', function(t) {
+test('should hotSwap all copies of a function', function(t) {
   var target = thermite.eval('(function() {\n'
     + '  return function() {}\n'
     + '})')
   var fn1 = target.result()
   var fn2 = target.result()
-  target.update('(function() {\n'
-    + '  return function() { return "updated" }\n'
+  target.hotSwap('(function() {\n'
+    + '  return function() { return "hotSwapped" }\n'
     + '})')
-  t.equal(fn1(), 'updated')
-  t.equal(fn2(), 'updated')
+  t.equal(fn1(), 'hotSwapped')
+  t.equal(fn2(), 'hotSwapped')
   t.end()
 })
 
-test('should update recursive function references', function(t) {
+test('should hotSwap recursive function references', function(t) {
   var recursiveReference
 
   var target = thermite.eval('(function rec(x) {\n'
@@ -215,7 +215,7 @@ test('should update recursive function references', function(t) {
   var recursiveReference = target.result
 
   // Replace this with a new calculation
-  target.update('(function rec(x) {\n'
+  target.hotSwap('(function rec(x) {\n'
     + '  return x ? rec(x.tail) + 1 : 100\n'
     + '})')
 
@@ -242,14 +242,14 @@ test('should propagate parse error', function(t) {
   t.end()
 })
 
-test('should propagate parse error during update', function(t) {
+test('should propagate parse error during hotSwap', function(t) {
   var target = thermite.eval('1.1')
   var originalLog = console.log
   var logs = []
   console.log = logs.push.bind(logs)
   try {
     try {
-      target.update('1.1.1')
+      target.hotSwap('1.1.1')
     } finally {
       console.log = originalLog
     }
@@ -289,7 +289,7 @@ test('should handle changing declaration to expression', function(t) {
     + '  return fn\n'
     + '})()')
   var fn = target.result
-  target.update('(function() {\n'
+  target.hotSwap('(function() {\n'
     + '  var fn = function(a, b) {\n'
     + '    return a * b\n'
     + '  }\n'
@@ -307,7 +307,7 @@ test('should handle changing expression to declaration', function(t) {
     + '  return fn\n'
     + '})()')
   var fn = target.result
-  target.update('(function() {\n'
+  target.hotSwap('(function() {\n'
     + '  function fn(a, b) {\n'
     + '    return a + b\n'
     + '  }\n'
@@ -322,7 +322,7 @@ test('should preserve deleted functions', function(t) {
     + '  return function() { return "hello" }\n'
     + '})()')
   var fn = target.result
-  target.update('(function() {\n'
+  target.hotSwap('(function() {\n'
     + '  return\n'
     + '})()')
   t.equal(fn(), 'hello')
