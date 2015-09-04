@@ -22,6 +22,7 @@
     "survivor": "^0.0.3"
   },
   "devDependencies": {
+    "bumpt": "0.0.4",
     "coveralls": "2.11.4",
     "istanbul": "0.3.19",
     "minilint": "^0.0.10",
@@ -31,11 +32,10 @@
     "zuul": "3.3.1"
   },
   "scripts": {
-    "test": "npm run zuul",
+    "test": "npm run lint && npm run tape && npm run cover && npm run zuul",
     "zuul": "./node_modules/.bin/zuul -- tests.js",
     "tape": "./node_modules/.bin/tape ./tests.js",
     "watch": "./node_modules/.bin/nodemon ./tests.js",
-    "test-all": "npm run lint && npm run cover && npm run zuul",
     "cover": "./node_modules/.bin/istanbul cover ./tests.js",
     "coveralls": "./node_modules/.bin/istanbul cover ./tests.js --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/.bin/coveralls && rm -rf ./coverage",
     "lint": "./node_modules/.bin/minilint '**/*.js' -e 'node_modules/**' '**/*.min.js' 'coverage/**'",
