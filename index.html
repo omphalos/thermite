@@ -46,22 +46,15 @@ a:hover { text-decoration: underline; }
 <textarea id="textarea">
 document.body.addEventListener('mousemove', function(evt) {
 
+  // Change this to:  message.innerHTML = evt.clientX
   message.innerHTML = Math.random()
 
-  /*
+  // Click "Hot Swap" to apply your changes
 
-  Try editing this code; for example,
-
-    message.innerHTML = evt.clientX
-
-  Click "Hot Swap" when you are done to see your changes in action.
-
-  "Hot Swap" doesn't add a second event listener.
-  It doesn't refresh the page.
-  It updates the original function in place.
-
-  */
-
+  /* "Hot Swap" doesn't add a second event listener.
+   * It doesn't refresh the page.
+   * It updates the original function in place.
+   */
 })
 </textarea>
 <div id="hotSwap" class="button">Hot Swap</div>
