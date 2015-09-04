@@ -8,7 +8,21 @@
     "url": "https://github.com/omphalos/thermite"
   },
   "keywords": [
-    "JavaScript"
+    "JavaScript",
+    "hot-swap",
+    "hot-load",
+    "hot-reload",
+    "live-reload",
+    "live-edit",
+    "instrumentation",
+    "ast",
+    "abstract-syntax-tree",
+    "swap",
+    "swapping",
+    "hot-swapping",
+    "livereload",
+    "reload",
+    "live"
   ],
   "author": "omphalos",
   "license": "MIT",
