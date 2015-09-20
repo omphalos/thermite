@@ -48,6 +48,7 @@ then `var thermite = require('thermite')`
 
 If you are using the browser, use thermite.min.js.
 `thermite` is exposed as a global variable.
+Or just use browserify.
 
 Basic usage
 -----------
