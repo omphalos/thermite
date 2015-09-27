@@ -57,6 +57,6 @@
     "minify": "cat bundle.js | ./node_modules/.bin/uglifyjs > thermite.min.js",
     "count": "gzip -c thermite.min.js | wc -c",
     "build": "npm run bundle; npm run minify; npm run count; rm bundle.js",
-    "release": "npm run build; npm run test-all; ./node_modules/.bin/bumpt"
+    "release": "npm run build; npm run test; ./node_modules/.bin/bumpt"
   }
 }
