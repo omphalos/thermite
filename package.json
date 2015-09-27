@@ -53,7 +53,7 @@
     "cover": "./node_modules/.bin/istanbul cover ./tests.js",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "lint": "./node_modules/.bin/minilint",
-    "bundle": "./node_modules/.bin/browserify -s thermite > bundle.js",
+    "bundle": "./node_modules/.bin/browserify thermite.js -s thermite > bundle.js",
     "minify": "cat bundle.js | ./node_modules/.bin/uglifyjs > thermite.min.js",
     "count": "gzip -c thermite.min.js | wc -c",
     "build": "npm run bundle; npm run minify; npm run count; rm bundle.js",
