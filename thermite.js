@@ -10,16 +10,16 @@ var contextIDCounter = new Counter('c')
 var template = ['function $thermiteTemplate() {',
   '',
   'if(__thermiteMap.$thermiteContextID.$thermiteBlockID.codeVersion >',
-  '  (__thermiteFunctionVersion || -1)) {',
+  '  (__thermiteFunctionVersion_$thermiteBlockID || -1)) {',
   '',
-  '  __thermiteFunction =',
+  '  __thermiteFunction_$thermiteBlockID =',
   '    eval(__thermiteMap.$thermiteContextID.$thermiteBlockID.code)',
   '',
-  '  __thermiteFunctionVersion =',
+  '  __thermiteFunctionVersion_$thermiteBlockID =',
   '    __thermiteMap.$thermiteContextID.$thermiteBlockID.codeVersion',
   '}',
   '',
-  'return __thermiteFunction.apply(this, arguments)',
+  'return __thermiteFunction_$thermiteBlockID.apply(this, arguments)',
   '',
 '}'].join('\n')
 
@@ -126,9 +126,6 @@ function rewriteNodeAndStoreInMap(contextID, version, node) {
   var code = node.source()
   var blockID = blockIDCounter.getNextID()
   var name = ''
-  var boundTemplate = template
-    .replace(/\$thermiteBlockID/g, blockID)
-    .replace(/\$thermiteContextID/g, contextID)
 
   // Strip out the name (to handle recursive references)
   if(node.id && node.id.name) {
@@ -141,7 +138,9 @@ function rewriteNodeAndStoreInMap(contextID, version, node) {
     FunctionDeclaration: addVersionToDeclaration,
     FunctionExpression: addVersionToExpression
   }
-  boundTemplate = addVersionTo[node.type](boundTemplate, name)
+  var boundTemplate = addVersionTo[node.type](template, name)
+    .replace(/\$thermiteBlockID/g, blockID)
+    .replace(/\$thermiteContextID/g, contextID)
 
   node.update(boundTemplate)
 
@@ -155,13 +154,15 @@ function rewriteNodeAndStoreInMap(contextID, version, node) {
 }
 
 function addVersionToDeclaration(boundTemplate, name) {
-  return 'var __thermiteFunctionVersion, __thermiteFunction; '
+  return 'var __thermiteFunctionVersion_$thermiteBlockID; '
+    + 'var __thermiteFunction_$thermiteBlockID; '
     + boundTemplate.replace('$thermiteTemplate', name)
 }
 
 function addVersionToExpression(boundTemplate, name) {
   return '(function ' + name + '() { '
-    + 'var __thermiteFunctionVersion, __thermiteFunction; '
+    + 'var __thermiteFunctionVersion_$thermiteBlockID; '
+    + 'var __thermiteFunction_$thermiteBlockID; '
     + 'return (' + boundTemplate.replace('$thermiteTemplate', '') + ')'
     + '.apply(this, arguments)'
   + '})'

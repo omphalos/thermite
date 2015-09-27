@@ -328,3 +328,37 @@ test('should preserve deleted functions', function(t) {
   t.equal(fn(), 'hello')
   t.end()
 })
+
+test('should update multiple expressions', function(t) {
+  var target = thermite.eval('(function() {\n'
+    + '  var a = function() { return "a" }\n'
+    + '  var b = function() { return "b" }\n'
+    + '  return { a: a, b: b }\n'
+    + '})()')
+  var fns = target.result
+  target.hotSwap('(function() {\n'
+    + '  var a = function() { return "a1" }\n'
+    + '  var b = function() { return "b1" }\n'
+    + '  return { a: a, b: b }\n'
+    + '})()')
+  t.equal(fns.a(), 'a1')
+  t.equal(fns.b(), 'b1')
+  t.end()
+})
+
+test('should update multiple declarations', function(t) {
+  var target = thermite.eval('(function() {\n'
+    + '  return { a: a, b: b }\n'
+    + '  function a() { return "a" }\n'
+    + '  function b() { return "b" }\n'
+    + '})()')
+  var fns = target.result
+  target.hotSwap('(function() {\n'
+    + '  return { a: a, b: b }\n'
+    + '  function a() { return "a1" }\n'
+    + '  function b() { return "b1" }\n'
+    + '})()')
+  t.equal(fns.a(), 'a1')
+  t.equal(fns.b(), 'b1')
+  t.end()
+})
