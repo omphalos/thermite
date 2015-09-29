@@ -139,6 +139,7 @@ function rewriteNodeAndStoreInMap(contextID, version, node) {
     FunctionExpression: addVersionToExpression
   }
   var boundTemplate = addVersionTo[node.type](template, name)
+    .replace(/\$thermiteTemplate/g, name)
     .replace(/\$thermiteBlockID/g, blockID)
     .replace(/\$thermiteContextID/g, contextID)
 
@@ -153,19 +154,19 @@ function rewriteNodeAndStoreInMap(contextID, version, node) {
   }
 }
 
-function addVersionToDeclaration(boundTemplate, name) {
-  return 'var __thermiteFunctionVersion_$thermiteBlockID; '
+function addVersionToDeclaration(template, name) {
+  return '; '
+    + 'var __thermiteFunctionVersion_$thermiteBlockID; '
     + 'var __thermiteFunction_$thermiteBlockID; '
-    + boundTemplate.replace('$thermiteTemplate', name)
+    + template
 }
 
-function addVersionToExpression(boundTemplate, name) {
+function addVersionToExpression(template, name) {
   return '(function ' + name + '() { '
     + 'var __thermiteFunctionVersion_$thermiteBlockID; '
     + 'var __thermiteFunction_$thermiteBlockID; '
-    + 'return (' + boundTemplate.replace('$thermiteTemplate', '') + ')'
-    + '.apply(this, arguments)'
-  + '})'
+    + 'return (' + template + ');'
+  + '})()'
 }
 
 function rangeToString(range) {

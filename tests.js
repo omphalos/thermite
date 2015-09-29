@@ -362,3 +362,48 @@ test('should update multiple declarations', function(t) {
   t.equal(fns.b(), 'b1')
   t.end()
 })
+
+test('should cache function expressions', function(t) {
+  var target = thermite.eval('(function() { return 1 })')
+  shouldCache(t, target, null, 1)
+  t.end()
+})
+
+test('should cache function declarations', function(t) {
+  var target = thermite.eval('(function() {\n'
+    + '  return x\n'
+    + '  function x() { return 1 }\n'
+    + '})()')
+  shouldCache(t, target, null, 1)
+  t.end()
+})
+
+test('should cache recursive function expressions', function(t) {
+  var target = thermite.eval('(function factorial(n) {\n'
+    + '  return n <= 1 ? 1 : factorial(n - 1) * n\n'
+    + '})')
+  shouldCache(t, target, 3, 6)
+  t.end()
+})
+
+test('should cache recursive function declarations', function(t) {
+  var target = thermite.eval('(function() {'
+    + '  return factorial\n'
+    + '  function factorial(n) {\n'
+    + '    return n <= 1 ? 1 : factorial(n - 1) * n\n'
+    + '  }\n'
+    + '})()')
+  shouldCache(t, target, 3, 6)
+  t.end()
+})
+
+function shouldCache(t, target, arg, expected) {
+  t.equal(target.result(arg), expected)
+  var originalEval = global.eval
+  try {
+    global.eval = t.fail
+    t.equal(target.result(arg), expected)
+  } finally {
+    global.eval = originalEval
+  }
+}
