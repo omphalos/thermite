@@ -14,24 +14,26 @@ Thermite gives you an API for programmatically live reloading code.
 Its main purpose is to act like a library used by
 development and (experimentally) deployment tools.
 
-Comparison with V8's live code reloading
-----------------------------------------
+Comparison with native browser live code reloading
+--------------------------------------------------
 
-I like V8 and use it in normal development.
+I love native browser live code reloading and use it in normal development.
 Nevertheless there are advantages to doing live code reloading with a library.
 
-* V8 runtimes are currently the only ones that support live code reloading
-(AFAIK),
-so if you want to do this in another browser,
+* Most runtimes currently do not support live code reloading,
+so on many browsers,
+if you want this feature,
 you're out of luck.
-* V8 requires the user to start a debugging session
-and doesn't provide a way to hot swap from the program itself.
+* Browsers that do support this
+don't offer direct access to this feature
+from inside your program.
 
 Thermite doesn't have these restrictions.
 
-I'm not complaining about V8 - I love it.
+I'm not complaining about native browser reloading - I think it's great.
 But I think there's utility
-in having a library available that hot-swaps code cross-browser.
+in having a library that gives you
+direct programmatic access to hot code swapping cross browser.
 
 Demo
 ----
@@ -68,11 +70,6 @@ Basic usage
 Calling `hotSwap` here doesn't add a second event listener to the DOM.
 It effectively replaces the reference to the event listener stored in the DOM
 with a new one.
-
-Tests
------
-
-To test, clone the repo and run `npm install` then `npm test`.
 
 How it works
 ------------
