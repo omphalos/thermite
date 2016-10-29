@@ -79,6 +79,24 @@ it('should hot swap nested functions', function() {
   assert.equal(savedReference(), 'outerChanged-innerChanged')
 })
 
+
+it('should hot swap nested function twice', function() {
+  var target = thermite.eval('(' + function outer() {
+    return function inner() {}
+  } + ')')
+
+  target.hotSwap('(' + function outer() {
+    return function inner() { return 'a' }
+  } + ')')
+  var callback = target.result()
+
+  target.hotSwap('(' + function outer() {
+    return function inner() { return 'b' }
+  } + ')')
+
+  assert.equal(callback(), 'b')
+})
+
 it('should add functions', function() {
   var target = thermite.eval('(function outer() {\n'
     + '  return function inner() {}\n'
