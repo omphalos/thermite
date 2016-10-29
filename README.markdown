@@ -6,9 +6,6 @@ Thermite
 [![Coverage](https://coveralls.io/repos/omphalos/thermite/badge.svg)
 ](https://coveralls.io/github/omphalos/thermite)
 
-[![Browser Support](https://saucelabs.com/browser-matrix/omphalos_thermite.svg)
-](https://saucelabs.com/u/omphalos_thermite)
-
 Thermite gives you an API for programmatically live reloading code.
 
 Its main purpose is to act like a library used by

@@ -2,6 +2,7 @@
 
 'use strict'
 
+var assert = require('assert')
 var test = require('tape')
 var thermite = require('./thermite.js')
 
@@ -9,63 +10,56 @@ var thermite = require('./thermite.js')
 // Test basic eval //
 /////////////////////
 
-test('should eval raw JavaScript', function(t) {
-  t.equal(thermite.eval('123').result, 123)
-  t.end()
+it('should should eval raw JavaScript', function() {
+  assert.equal(thermite.eval('123').result, 123)
 })
 
-test('should eval an anonymous function', function(t) {
+it('should eval an anonymous function', function() {
   var fn = thermite.eval('(function() { return 123 })').result
-  t.equal(fn(), 123)
-  t.end()
+  assert.equal(fn(), 123)
 })
 
 var canReadFunctionNames = (function f() {}).name === 'f'
 if(canReadFunctionNames) {
-  test('should eval a named function', function(t) {
+  it('should eval a named function', function() {
     var fn = thermite.eval('(function x() { return 123 })').result
-    t.equal(fn(), 123)
-    t.equal(fn.name, 'x')
-    t.end()
+    assert.equal(fn(), 123)
+    assert.equal(fn.name, 'x')
   })
 }
 
-test('should eval in scope', function(t) {
+it('should eval in scope', function() {
   var x = 123
   thermite.eval('x = 5', {
     eval: function(code) { return eval(code) }
   })
-  t.equal(x, 5)
-  t.end()
+  assert.equal(x, 5)
 })
 
 /////////////////////////////
 // Test basic hot swapping //
 /////////////////////////////
 
-test('should replace functions', function(t) {
+it('should replace functions', function() {
   var target = thermite.eval('(function noop() {})')
   target.hotSwap('(function add(x, y) { return x + y })')
-  t.equal(target.result(2, 3), 5)
-  t.end()
+  assert.equal(target.result(2, 3), 5)
 })
 
-test('should replace multiline functions', function(t) {
+it('should replace multiline functions', function() {
   var target = thermite.eval('(function noop() {})')
   target.hotSwap('(function add(x, y) { return x + y })')
-  t.equal(target.result(2, 3), 5)
-  t.end()
+  assert.equal(target.result(2, 3), 5)
 })
 
-test('should hotSwap function references', function(t) {
+it('should hotSwap function references', function() {
   var target = thermite.eval('(function() {})')
   var savedReference = target.result
   target.hotSwap('(function add(x, y) { return x + y })')
-  t.equal(savedReference(2, 3), 5)
-  t.end()
+  assert.equal(savedReference(2, 3), 5)
 })
 
-test('should hotSwap recursive-style function references', function(t) {
+it('should hotSwap recursive-style function references', function() {
   var target = thermite.eval('(function length(x) {\n'
     + '  return x ? rec(x.tail) + 1 : 0\n'
     + '})')
@@ -73,11 +67,10 @@ test('should hotSwap recursive-style function references', function(t) {
   target.hotSwap('(function lengthPlus100(x) {\n'
     + '  return x ? lengthPlus100(x.tail) + 1 : 100\n'
     + '})')
-  t.equal(savedReference({ tail: { tail: {} } }), 103)
-  t.end()
+  assert.equal(savedReference({ tail: { tail: {} } }), 103)
 })
 
-test('should hot swap nested functions', function(t) {
+it('should hot swap nested functions', function() {
   var target = thermite.eval('(function outer() {\n'
     + '  return "outer-" + inner()\n'
     + '  function inner() { return "inner" }\n'
@@ -87,11 +80,10 @@ test('should hot swap nested functions', function(t) {
     + '  return "outerChanged-" + inner()\n'
     + '  function inner() { return "innerChanged" }\n'
     + '})')
-  t.equal(savedReference(), 'outerChanged-innerChanged')
-  t.end()
+  assert.equal(savedReference(), 'outerChanged-innerChanged')
 })
 
-test('should add functions', function(t) {
+it('should add functions', function() {
   var target = thermite.eval('(function outer() {\n'
     + '  return function inner() {}\n'
     + '})')
@@ -104,11 +96,10 @@ test('should add functions', function(t) {
   var inner1 = outer()
   var inner2 = inner1()
   var inner2Result = inner2()
-  t.equal(inner2Result, 'inner2Result')
-  t.end()
+  assert.equal(inner2Result, 'inner2Result')
 })
 
-test('should hotSwap added functions', function(t) {
+it('should hotSwap added functions', function() {
   var target = thermite.eval('(function outer() {\n'
     + '  return function inner() {}\n'
     + '})')
@@ -126,11 +117,10 @@ test('should hotSwap added functions', function(t) {
   var inner1 = outer()
   var inner2 = inner1()
   var inner2Result = inner2()
-  t.equal(inner2Result, 'inner2ResultChanged')
-  t.end()
+  assert.equal(inner2Result, 'inner2ResultChanged')
 })
 
-test('should hotSwap added functions 10 times', function(t) {
+it('should hotSwap added functions 10 times', function() {
   var target = thermite.eval('(function outer() {\n'
     + '  return function inner() {}\n'
     + '})')
@@ -144,11 +134,10 @@ test('should hotSwap added functions 10 times', function(t) {
   var inner1 = outer()
   var inner2 = inner1()
   var inner2Result = inner2()
-  t.equal(inner2Result, 9)
-  t.end()
+  assert.equal(inner2Result, 9)
 })
 
-test('should hotSwap function twice', function(t) {
+it('should hotSwap function twice', function() {
   var target = thermite.eval('(function outer() {\n'
     + '  return function inner() {}\n'
     + '})')
@@ -160,11 +149,10 @@ test('should hotSwap function twice', function(t) {
     + '  return function inner() { return 2 }\n'
     + '})')
   var inner = outer()
-  t.equal(inner(), 2)
-  t.end()
+  assert.equal(inner(), 2)
 })
 
-test('should hotSwap 10 times', function(t) {
+it('should hotSwap 10 times', function() {
   var target = thermite.eval('(function outer() {\n'
     + '  return function inner() {}\n'
     + '})')
@@ -174,11 +162,10 @@ test('should hotSwap 10 times', function(t) {
       + '  return function inner() { return ' + i + ' }\n'
       + '})')
   var inner = outer()
-  t.equal(inner(), 9) // The last value of `i` is 9.
-  t.end()
+  assert.equal(inner(), 9) // The last value of `i` is 9.
 })
 
-test('should hotSwap member functions', function(t) {
+it('should hotSwap member functions', function() {
   var target = thermite.eval('(function() {\n'
     + '  return { fn: function() {} }\n'
     + '})')
@@ -186,11 +173,10 @@ test('should hotSwap member functions', function(t) {
   target.hotSwap('(function() {\n'
     + '  return { fn: function() { return "hotSwapped" } }\n'
     + '})')
-  t.equal(fn(), 'hotSwapped')
-  t.end()
+  assert.equal(fn(), 'hotSwapped')
 })
 
-test('should hotSwap all copies of a function', function(t) {
+it('should hotSwap all copies of a function', function() {
   var target = thermite.eval('(function() {\n'
     + '  return function() {}\n'
     + '})')
@@ -199,12 +185,11 @@ test('should hotSwap all copies of a function', function(t) {
   target.hotSwap('(function() {\n'
     + '  return function() { return "hotSwapped" }\n'
     + '})')
-  t.equal(fn1(), 'hotSwapped')
-  t.equal(fn2(), 'hotSwapped')
-  t.end()
+  assert.equal(fn1(), 'hotSwapped')
+  assert.equal(fn2(), 'hotSwapped')
 })
 
-test('should hotSwap recursive function references', function(t) {
+it('should hotSwap recursive function references', function() {
   var recursiveReference
 
   var target = thermite.eval('(function rec(x) {\n'
@@ -219,11 +204,10 @@ test('should hotSwap recursive function references', function(t) {
     + '  return x ? rec(x.tail) + 1 : 100\n'
     + '})')
 
-  t.equal(recursiveReference({ tail: { tail: {} } }), 103)
-  t.end()
+  assert.equal(recursiveReference({ tail: { tail: {} } }), 103)
 })
 
-test('should propagate parse error', function(t) {
+it('should propagate parse error', function() {
   var originalLog = console.log
   var logs = []
   console.log = logs.push.bind(logs)
@@ -234,15 +218,14 @@ test('should propagate parse error', function(t) {
       console.log = originalLog
     }
   } catch(err) {
-    t.equal(logs[0], 'Error parsing source:')
-    t.equal(logs[1], '1.1.1')
-    return t.end()
+    assert.equal(logs[0], 'Error parsing source:')
+    assert.equal(logs[1], '1.1.1')
+    return
   }
-  t.fail('failed to propagate error')
-  t.end()
+  assert.fail('failed to propagate error')
 })
 
-test('should propagate parse error during hotSwap', function(t) {
+it('should propagate parse error during hotSwap', function() {
   var target = thermite.eval('1.1')
   var originalLog = console.log
   var logs = []
@@ -254,15 +237,14 @@ test('should propagate parse error during hotSwap', function(t) {
       console.log = originalLog
     }
   } catch(err) {
-    t.equal(logs[0], 'Error parsing source:')
-    t.equal(logs[1], '1.1.1')
-    return t.end()
+    assert.equal(logs[0], 'Error parsing source:')
+    assert.equal(logs[1], '1.1.1')
+    return
   }
-  t.fail('failed to propagate error')
-  t.end()
+  assert.fail('failed to propagate error')
 })
 
-test('should propagate runtime error', function(t) {
+it('should propagate runtime error', function() {
   var originalLog = console.log
   var logs = []
   console.log = logs.push.bind(logs)
@@ -273,15 +255,14 @@ test('should propagate runtime error', function(t) {
       console.log = originalLog
     }
   } catch(err) {
-    t.equal(logs[0], 'Error evaling code:')
-    t.equal(logs[1], 'a.b.c')
-    return t.end()
+    assert.equal(logs[0], 'Error evaling code:')
+    assert.equal(logs[1], 'a.b.c')
+    return
   }
-  t.fail('failed to propagate error')
-  t.end()
+  assert.fail('failed to propagate error')
 })
 
-test('should handle changing declaration to expression', function(t) {
+it('should handle changing declaration to expression', function() {
   var target = thermite.eval('(function() {\n'
     + '  function fn(a, b) {\n'
     + '    return a + b\n'
@@ -295,11 +276,10 @@ test('should handle changing declaration to expression', function(t) {
     + '  }\n'
     + '  return fn\n'
     + '})()')
-  t.equal(fn(2, 3), 6)
-  t.end()
+  assert.equal(fn(2, 3), 6)
 })
 
-test('should handle changing expression to declaration', function(t) {
+it('should handle changing expression to declaration', function() {
   var target = thermite.eval('(function() {\n'
     + '  var fn = function(a, b) {\n'
     + '    return a * b\n'
@@ -313,11 +293,10 @@ test('should handle changing expression to declaration', function(t) {
     + '  }\n'
     + '  return fn\n'
     + '})()')
-  t.equal(fn(2, 3), 5)
-  t.end()
+  assert.equal(fn(2, 3), 5)
 })
 
-test('should preserve deleted functions', function(t) {
+it('should preserve deleted functions', function() {
   var target = thermite.eval('(function() {\n'
     + '  return function() { return "hello" }\n'
     + '})()')
@@ -325,11 +304,10 @@ test('should preserve deleted functions', function(t) {
   target.hotSwap('(function() {\n'
     + '  return\n'
     + '})()')
-  t.equal(fn(), 'hello')
-  t.end()
+  assert.equal(fn(), 'hello')
 })
 
-test('should update multiple expressions', function(t) {
+it('should update multiple expressions', function() {
   var target = thermite.eval('(function() {\n'
     + '  var a = function() { return "a" }\n'
     + '  var b = function() { return "b" }\n'
@@ -341,12 +319,11 @@ test('should update multiple expressions', function(t) {
     + '  var b = function() { return "b1" }\n'
     + '  return { a: a, b: b }\n'
     + '})()')
-  t.equal(fns.a(), 'a1')
-  t.equal(fns.b(), 'b1')
-  t.end()
+  assert.equal(fns.a(), 'a1')
+  assert.equal(fns.b(), 'b1')
 })
 
-test('should update multiple declarations', function(t) {
+it('should update multiple declarations', function() {
   var target = thermite.eval('(function() {\n'
     + '  return { a: a, b: b }\n'
     + '  function a() { return "a" }\n'
@@ -358,51 +335,46 @@ test('should update multiple declarations', function(t) {
     + '  function a() { return "a1" }\n'
     + '  function b() { return "b1" }\n'
     + '})()')
-  t.equal(fns.a(), 'a1')
-  t.equal(fns.b(), 'b1')
-  t.end()
+  assert.equal(fns.a(), 'a1')
+  assert.equal(fns.b(), 'b1')
 })
 
-test('should cache function expressions', function(t) {
+it('should cache function expressions', function() {
   var target = thermite.eval('(function() { return 1 })')
-  shouldCache(t, target, null, 1)
-  t.end()
+  shouldCache(assert, target, null, 1)
 })
 
-test('should cache function declarations', function(t) {
+it('should cache function declarations', function() {
   var target = thermite.eval('(function() {\n'
     + '  return x\n'
     + '  function x() { return 1 }\n'
     + '})()')
-  shouldCache(t, target, null, 1)
-  t.end()
+  shouldCache(assert, target, null, 1)
 })
 
-test('should cache recursive function expressions', function(t) {
+it('should cache recursive function expressions', function() {
   var target = thermite.eval('(function factorial(n) {\n'
     + '  return n <= 1 ? 1 : factorial(n - 1) * n\n'
     + '})')
-  shouldCache(t, target, 3, 6)
-  t.end()
+  shouldCache(assert, target, 3, 6)
 })
 
-test('should cache recursive function declarations', function(t) {
+it('should cache recursive function declarations', function() {
   var target = thermite.eval('(function() {'
     + '  return factorial\n'
     + '  function factorial(n) {\n'
     + '    return n <= 1 ? 1 : factorial(n - 1) * n\n'
     + '  }\n'
     + '})()')
-  shouldCache(t, target, 3, 6)
-  t.end()
+  shouldCache(assert, target, 3, 6)
 })
 
-function shouldCache(t, target, arg, expected) {
-  t.equal(target.result(arg), expected)
+function shouldCache(assert, target, arg, expected) {
+  assert.equal(target.result(arg), expected)
   var originalEval = global.eval
   try {
-    global.eval = t.fail
-    t.equal(target.result(arg), expected)
+    global.eval = assert.fail
+    assert.equal(target.result(arg), expected)
   } finally {
     global.eval = originalEval
   }

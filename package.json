@@ -40,23 +40,21 @@
     "coveralls": "2.11.4",
     "istanbul": "0.3.19",
     "minilint": "0.0.12",
+    "mocha": "^3.1.2",
     "nodemon": "1.4.1",
-    "tape": "4.2.0",
-    "uglifyjs": "2.4.10",
-    "zuul": "3.3.1"
+    "uglifyjs": "2.4.10"
   },
   "scripts": {
-    "test": "npm run lint; npm run tape; npm run cover; npm run zuul",
-    "zuul": "./node_modules/.bin/zuul -- tests.js",
-    "tape": "./node_modules/.bin/tape ./tests.js",
-    "watch": "./node_modules/.bin/nodemon ./tests.js",
-    "cover": "./node_modules/.bin/istanbul cover ./tests.js",
-    "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
-    "lint": "./node_modules/.bin/minilint",
-    "bundle": "./node_modules/.bin/browserify thermite.js -s thermite > bundle.js",
-    "minify": "cat bundle.js | ./node_modules/.bin/uglifyjs > thermite.min.js",
+    "test": "npm run lint; npm run mocha; npm run cover",
+    "mocha": "mocha ./tests.js",
+    "watch": "mocha --watch ./tests.js",
+    "cover": "istanbul cover _mocha -- ./tests.js",
+    "coveralls": "cat ./coverage/lcov.info | coveralls",
+    "lint": "minilint",
+    "bundle": "browserify thermite.js -s thermite > bundle.js",
+    "minify": "cat bundle.js | uglifyjs > thermite.min.js",
     "count": "gzip -c thermite.min.js | wc -c",
     "build": "npm run bundle; npm run minify; npm run count; rm bundle.js",
-    "release": "npm run build; npm run test; ./node_modules/.bin/bumpt"
+    "release": "npm run build; npm run test; bumpt"
   }
 }
