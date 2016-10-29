@@ -3,7 +3,6 @@
 'use strict'
 
 var assert = require('assert')
-var test = require('tape')
 var thermite = require('./thermite.js')
 
 /////////////////////
