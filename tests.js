@@ -18,14 +18,11 @@ it('should eval an anonymous function', function() {
   assert.equal(fn(), 123)
 })
 
-var canReadFunctionNames = (function f() {}).name === 'f'
-if(canReadFunctionNames) {
-  it('should eval a named function', function() {
-    var fn = thermite.eval('(function x() { return 123 })').result
-    assert.equal(fn(), 123)
-    assert.equal(fn.name, 'x')
-  })
-}
+it('should eval a named function', function() {
+  var fn = thermite.eval('(function x() { return 123 })').result
+  assert.equal(fn(), 123)
+  assert.equal(fn.name, 'x')
+})
 
 it('should eval in scope', function() {
   var x = 123
