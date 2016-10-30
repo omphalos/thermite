@@ -60,10 +60,12 @@ function hotSwap(state, source) {
 
   state.version++
 
+  var version = state.version
+  var contextID = state.contextID
   var dmp = new DiffMatchPatch()
   var diffs = dmp.diff_main(state.lastSource, source, state.doLineDiff)
   var lookup = survivor(diffs, true)
-  var entries = getEntriesForContext(state.contextID)
+  var entries = getEntriesForContext(contextID)
   var entriesByRangeString = {}
   var persistedBlockIDs = {}
 
@@ -82,12 +84,13 @@ function hotSwap(state, source) {
       && endSurvived
       && entriesByRangeString[rangeToString([startSurvived, endSurvived])]
     if(!existingEntry)
-      return rewriteNodeAndStoreInMap(state.contextID, state.version, node)
+      return rewriteNodeAndStoreInMap(contextID, version, node)
     // Mutate the entry to contain the new info:
-    existingEntry.codeVersion = state.version
-    existingEntry.code = '(' + node.source() + ')'
+    var blockID = existingEntry.blockID
+    existingEntry.codeVersion = version
+    existingEntry.code = rewriteNode(contextID, blockID, node)
     existingEntry.node = node
-    persistedBlockIDs[existingEntry.blockID] = true
+    persistedBlockIDs[blockID] = true
   })
 
   for(var blockID in entries)
@@ -122,18 +125,26 @@ function forEachNode(source, visitor) {
 }
 
 function rewriteNodeAndStoreInMap(contextID, version, node) {
-
-  var code = node.source()
   var blockID = blockIDCounter.getNextID()
-  var name = ''
+  var code = rewriteNode(contextID, blockID, node)
+  var entries = getEntriesForContext(contextID)
+  entries[blockID] = {
+    blockID: blockID,
+    node: node,
+    codeVersion: version,
+    code: '(' + code + ')'
+  }
+}
 
+function rewriteNode(contextID, blockID, node) {
+  var code = node.source()
+  var name = ''
   // Strip out the name (to handle recursive references)
   if(node.id && node.id.name) {
     name = node.id.name
     code = code.replace(name, '')
     node.update(code)
   }
-
   var addVersionTo = {
     FunctionDeclaration: addVersionToDeclaration,
     FunctionExpression: addVersionToExpression
@@ -142,16 +153,8 @@ function rewriteNodeAndStoreInMap(contextID, version, node) {
     .replace(/\$thermiteTemplate/g, name)
     .replace(/\$thermiteBlockID/g, blockID)
     .replace(/\$thermiteContextID/g, contextID)
-
   node.update(boundTemplate)
-
-  var entries = getEntriesForContext(contextID)
-  entries[blockID] = {
-    blockID: blockID,
-    node: node,
-    codeVersion: version,
-    code: '(' + code + ')'
-  }
+  return '(' + code + ')'
 }
 
 function addVersionToDeclaration(template, name) {

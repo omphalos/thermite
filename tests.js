@@ -60,8 +60,8 @@ it('should hotSwap recursive-style function references', function() {
     + '  return x ? rec(x.tail) + 1 : 0\n'
     + '})')
   var savedReference = target.result
-  target.hotSwap('(function lengthPlus100(x) {\n'
-    + '  return x ? lengthPlus100(x.tail) + 1 : 100\n'
+  target.hotSwap('(function length(x) {\n'
+    + '  return x ? length(x.tail) + 1 : 100\n'
     + '})')
   assert.equal(savedReference({ tail: { tail: {} } }), 103)
 })
@@ -78,7 +78,6 @@ it('should hot swap nested functions', function() {
     + '})')
   assert.equal(savedReference(), 'outerChanged-innerChanged')
 })
-
 
 it('should hot swap nested function twice', function() {
   var target = thermite.eval('(' + function outer() {
