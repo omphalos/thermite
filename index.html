@@ -12,7 +12,7 @@ html, body {
 }
 * { box-sizing: border-box; }
 #hotSwap,
-#message,
+#counter,
 #github { margin-top: 3%; }
 .button {
   background-color: black;
@@ -37,30 +37,39 @@ html, body {
 }
 a:hover { text-decoration: underline; }
 #github { float: right; display: inline-block; }
-#message { color: lightgray; }
+#counter { color: lightgray; }
 .CodeMirror { height: 400px; }
 </style>
 <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.6.0/codemirror.js"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/5.6.0/mode/javascript/javascript.js"></script>
 <script src="thermite.min.js"></script>
 <textarea id="textarea">
-document.body.addEventListener('mousemove', function(evt) {
+var value = 0
 
-  // Change this to:  message.innerHTML = evt.clientX
-  message.innerHTML = Math.random()
+setInterval(function() {
+  // This code is running in your browser right now:
+  counter.innerHTML = value++
+  // You can see it incrementing a counter at the bottom of your screen.
 
-  // Click "Hot Swap" to apply your changes
+  // Change the code here to read:
+  //   counter.innerHTML = value--
 
-  /* "Hot Swap" doesn't add a second event listener.
-   * It doesn't refresh the page.
-   * It updates the original function in place.
-   */
-})
+  // Then click "Hot Swap" to apply your changes
+  // You will see the counter start decrementing instead.
+
+  // "Hot Swap" changes the code in place.
+  // It does this without any other side-effect.
+  // It doesn't create a second timer.
+  // It doesn't refresh the page.
+  // It updates the original function in place.
+  // When the timer fires, it uses the new logic.
+  // Your progam has been dynamically updated at runtime.
+}, 500)
 </textarea>
 <div id="hotSwap" class="button">Hot Swap</div>
 <a id="github" class="button"
   href="https://github.com/omphalos/thermite">GitHub</a>
-<div id="message"></div>
+<div id="counter"></div>
 <script>
 var code = CodeMirror.fromTextArea(textarea, {
   theme: '3024-night',
