@@ -96,6 +96,33 @@ it('should hot swap nested function twice', function() {
   assert.equal(callback(), 'b')
 })
 
+it('should hot swap callbacks twice', function() {
+  var state = {}
+  var callback = null
+  function setCallback(f) { callback = f }
+
+  var target = thermite.eval('(' + function outer(state) {
+    return 0
+  } + ')')
+
+  target.hotSwap('(' + function outer(state, setCallback) {
+    setCallback(function inner() {
+      state.value = 1
+    })
+  } + ')')
+  target.result(state, setCallback)
+  callback()
+
+  target.hotSwap('(' + function outer(state, setCallback) {
+    setCallback(function inner() {
+      state.value = 2
+    })
+  } + ')')
+  callback()
+
+  assert.equal(state.value, 2)
+})
+
 it('should add functions', function() {
   var target = thermite.eval('(function outer() {\n'
     + '  return function inner() {}\n'

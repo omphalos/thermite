@@ -83,8 +83,11 @@ function hotSwap(state, source) {
     var existingEntry = startSurvived
       && endSurvived
       && entriesByRangeString[rangeToString([startSurvived, endSurvived])]
-    if(!existingEntry)
-      return rewriteNodeAndStoreInMap(contextID, version, node)
+    if(!existingEntry) {
+      var newBlockID = rewriteNodeAndStoreInMap(contextID, version, node)
+      persistedBlockIDs[newBlockID] = true
+      return
+    }
     // Mutate the entry to contain the new info:
     var blockID = existingEntry.blockID
     existingEntry.codeVersion = version
@@ -134,6 +137,7 @@ function rewriteNodeAndStoreInMap(contextID, version, node) {
     codeVersion: version,
     code: '(' + code + ')'
   }
+  return blockID
 }
 
 function rewriteNode(contextID, blockID, node) {
