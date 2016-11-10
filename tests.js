@@ -400,13 +400,29 @@ it('should cache recursive function expressions', function() {
 })
 
 it('should cache recursive function declarations', function() {
-  var target = thermite.eval('(function() {'
+  var target = thermite.eval('(function() {\n'
     + '  return factorial\n'
     + '  function factorial(n) {\n'
     + '    return n <= 1 ? 1 : factorial(n - 1) * n\n'
     + '  }\n'
     + '})()')
   shouldCache(assert, target, 3, 6)
+})
+
+it('should not swap deleted functions', function() {
+  var target = thermite.eval('(function() {\n'
+    + '  return function() { return 1 }\n'
+    + '})')
+  var fn1 = target.result()
+  target.hotSwap('(function() {\n'
+    + '  return\n'
+    + '})')
+  target.hotSwap('(function() {\n'
+    + '  return function() { return 2 }\n'
+    + '})')
+  var fn2 = target.result()
+  assert.equal(fn1(), 1)
+  assert.equal(fn2(), 2)
 })
 
 function shouldCache(assert, target, arg, expected) {

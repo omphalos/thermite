@@ -47,7 +47,8 @@ function thermiteEval(source, options) {
 
   var rewritten = forEachNode(source, function(node) {
     if(functionNodeTypes.indexOf(node.type) < 0) return
-    rewriteNodeAndStoreInMap(state.contextID, state.version, node)
+    var blockID = blockIDCounter.getNextID()
+    rewriteNode(state.contextID, blockID, state.version, node)
   }).toString()
 
   return {
@@ -83,16 +84,10 @@ function hotSwap(state, source) {
     var existingEntry = startSurvived
       && endSurvived
       && entriesByRangeString[rangeToString([startSurvived, endSurvived])]
-    if(!existingEntry) {
-      var newBlockID = rewriteNodeAndStoreInMap(contextID, version, node)
-      persistedBlockIDs[newBlockID] = true
-      return
-    }
-    // Mutate the entry to contain the new info:
-    var blockID = existingEntry.blockID
-    existingEntry.codeVersion = version
-    existingEntry.code = rewriteNode(contextID, blockID, node)
-    existingEntry.node = node
+    var blockID = existingEntry
+      ? existingEntry.blockID
+      : blockIDCounter.getNextID()
+    rewriteNode(contextID, blockID, version, node)
     persistedBlockIDs[blockID] = true
   })
 
@@ -127,20 +122,7 @@ function forEachNode(source, visitor) {
   }
 }
 
-function rewriteNodeAndStoreInMap(contextID, version, node) {
-  var blockID = blockIDCounter.getNextID()
-  var code = rewriteNode(contextID, blockID, node)
-  var entries = getEntriesForContext(contextID)
-  entries[blockID] = {
-    blockID: blockID,
-    node: node,
-    codeVersion: version,
-    code: '(' + code + ')'
-  }
-  return blockID
-}
-
-function rewriteNode(contextID, blockID, node) {
+function rewriteNode(contextID, blockID, version, node) {
   var code = node.source()
   var name = ''
   // Strip out the name (to handle recursive references)
@@ -158,7 +140,14 @@ function rewriteNode(contextID, blockID, node) {
     .replace(/\$thermiteBlockID/g, blockID)
     .replace(/\$thermiteContextID/g, contextID)
   node.update(boundTemplate)
-  return '(' + code + ')'
+  var rewritten = '(' + code + ')'
+  var entries = getEntriesForContext(contextID)
+  entries[blockID] = {
+    blockID: blockID,
+    node: node,
+    codeVersion: version,
+    code: rewritten
+  }
 }
 
 function addVersionToDeclaration(template, name) {

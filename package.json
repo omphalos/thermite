@@ -45,7 +45,7 @@
     "uglifyjs": "2.4.10"
   },
   "scripts": {
-    "test": "npm run lint; npm run mocha; npm run cover",
+    "test": "npm run lint && npm run mocha && npm run cover",
     "mocha": "mocha ./tests.js",
     "watch": "nodemon -x 'mocha ./tests.js'",
     "cover": "istanbul cover _mocha -- ./tests.js",
