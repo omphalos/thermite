@@ -36,11 +36,12 @@
     "survivor": "^0.0.3"
   },
   "devDependencies": {
+    "browserify": "13.1.1",
     "bumpt": "0.0.4",
     "coveralls": "2.11.4",
     "istanbul": "0.3.19",
     "minilint": "0.0.12",
-    "mocha": "^3.1.2",
+    "mocha": "3.1.2",
     "nodemon": "1.4.1",
     "uglifyjs": "2.4.10"
   },
