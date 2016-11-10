@@ -45,9 +45,11 @@
     "uglifyjs": "2.4.10"
   },
   "scripts": {
-    "test": "npm run lint && npm run mocha && npm run cover",
+    "test": "npm run lint && npm run mocha && npm run cover-and-check",
     "mocha": "mocha ./tests.js",
     "watch": "nodemon -x 'mocha ./tests.js'",
+    "check-coverage": "istanbul check-coverage coverage/coverage.json",
+    "cover-and-check": "npm run cover && npm run check-coverage",
     "cover": "istanbul cover _mocha -- ./tests.js",
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "lint": "minilint",
