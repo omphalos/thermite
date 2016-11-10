@@ -1,6 +1,6 @@
 {
   "name": "thermite",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "JavaScript live code reloading utility for Node and browsers",
   "main": "thermite.js",
   "repository": {
