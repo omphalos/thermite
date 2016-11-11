@@ -462,6 +462,21 @@ it('should swap base classes', function() {
   assert.equal(instance.y, 30)
 })
 
+it('should preserve bizarre constructor semantics of JavaScript', function() {
+  var target1 = thermite.eval('(function X() {\n'
+    + '  this.a = 1\n'
+    + '  return "string"\n'
+    + '})')
+  var X = target1.result
+  assert.equal(new X() instanceof X, true)
+  var target2 = thermite.eval('(function Y() {\n'
+    + '  this.a = 1\n'
+    + '  return { b: 2 }\n'
+    + '})')
+  var Y = target2.result
+  assert.equal(new Y() instanceof Y, false)
+})
+
 function shouldCache(assert, target, arg, expected) {
   assert.equal(target.result(arg), expected)
   var originalEval = global.eval
