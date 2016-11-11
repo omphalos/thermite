@@ -5,10 +5,6 @@
 var assert = require('assert')
 var thermite = require('./thermite.js')
 
-/////////////////////
-// Test basic eval //
-/////////////////////
-
 it('should should eval raw JavaScript', function() {
   assert.equal(thermite.eval('123').result, 123)
 })
@@ -31,10 +27,6 @@ it('should eval in scope', function() {
   })
   assert.equal(x, 5)
 })
-
-/////////////////////////////
-// Test basic hot swapping //
-/////////////////////////////
 
 it('should replace functions', function() {
   var target = thermite.eval('(function noop() {})')
@@ -423,6 +415,51 @@ it('should not swap deleted functions', function() {
   var fn2 = target.result()
   assert.equal(fn1(), 1)
   assert.equal(fn2(), 2)
+})
+
+it('should swap classes', function() {
+  var target = thermite.eval('(function() {\n'
+    + '  function X() { this.a = 1 }\n'
+    + '  X.prototype.b = function() { return 3 }\n'
+    + '  return X\n'
+    + '})()')
+  var X = target.result
+  target.hotSwap('(function() {\n'
+    + '  function X() { this.a = 2 }\n'
+    + '  X.prototype.b = function() { return 4 }\n'
+    + '  return X\n'
+    + '})()')
+  var instance = new X
+  assert.equal(instance.a, 2)
+  assert.equal(instance.b(), 4)
+})
+
+it('should swap base classes', function() {
+  var target = thermite.eval('(function() {\n'
+    + '  function Parent() { this.x = 1 }\n'
+    + '  Parent.prototype.a = function() { return 2 }\n'
+    + '  function Child() {\n'
+    + '    Parent.call(this)\n'
+    + '    this.y = 3\n'
+    + '  }\n'
+    + '  Child.prototype = Object.create(Parent.prototype)\n'
+    + '  return Child\n'
+    + '})()')
+  var Child = target.result
+  target.hotSwap('(function() {\n'
+    + '  function Parent() { this.x = 10 }\n'
+    + '  Parent.prototype.a = function() { return 20 }\n'
+    + '  function Child() {\n'
+    + '    Parent.call(this)\n'
+    + '    this.y = 30\n'
+    + '  }\n'
+    + '  Child.prototype = Object.create(Parent.prototype)\n'
+    + '  return Child\n'
+    + '})()')
+  var instance = new Child
+  assert.equal(instance.x, 10)
+  assert.equal(instance.a(), 20)
+  assert.equal(instance.y, 30)
 })
 
 function shouldCache(assert, target, arg, expected) {
